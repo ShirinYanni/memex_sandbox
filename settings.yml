@@ -1,0 +1,7 @@
+path_to_memex: ./_data/
+bib_all: ./_bib/zotero_bibliography.bib
+bibtex_keys: ./_bib/bibtex_keys.yml
+language_keys: ./_bib/bibtex_languages.yml
+memex_path: /Users/shirin/Desktop/DH_Master/WS20_21/UE_Romanov_ToolsTechniquesDH/memex_sandbox/_data
+path_to_poppler:/Users/shirin/Desktop/DH_Master/WS20_21/UE_Romanov_ToolsTechniquesDH/memex_sandbox/poppler.rb
+language_keys: ./_bib/language_keys.yml
