@@ -6,7 +6,7 @@ import pytesseract
 import pdf2image
 import yaml
 
-settingsFile = "config_MA_new.yml"
+settingsFile = "settings.yml"
 settings = yaml.safe_load(open(settingsFile))
 
 memexPath = settings["memex_path"]

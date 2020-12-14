@@ -1,85 +1,8 @@
-#functions
+import os, re, shutil
 
-import os, json
-import pdf2image, pytesseract
-import PyPDF2  
-import yaml, re
-
-settingsFile = "./settings.yml"
-settings = yaml.safe_load(open(settingsFile))
-
-memexPath = settings["path_to_memex"]
-popplerPath = settings["path_to_poppler"]
-
-# generate path from bibtex code:
-def generatePublPath(pathToMemex, bibTexCode):
-    temp = bibTexCode.lower()
-    directory = os.path.join(pathToMemex, temp[0], temp[:2], bibTexCode)
-
-    return(directory)
-
-#############################
-# REUSING FUNCTIONS #########
-#############################
-
-def removecomments(pathToPdf):
-    try:
-        with open(pathToPdf, 'rb') as pdf_obj:
-            pdf = PyPDF2.PdfFileReader(pdf_obj)
-            out = PyPDF2.PdfFileWriter()
-            for page in pdf.pages:
-                out.addPage(page)
-                out.removeLinks()
-            tempPDF = pathToPdf.replace(".pdf", "_TEMP.pdf")
-            with open(tempPDF, 'wb') as f: 
-                out.write(f)
-        return(tempPDF)
-    except: 
-        return False
-
-def ocrPublication(pathToMemex, citationKey, language):
-    publPath = generatePublPath(pathToMemex, citationKey)    
-    pdfFile  = os.path.join(publPath, citationKey + ".pdf")
-    jsonFile = os.path.join(publPath, citationKey + ".json")
-    saveToPath = os.path.join(publPath, "pages")
-
-    pdfFileTemp = removecomments(pdfFile)
-
-
-    if pdfFileTemp != False:
-
-        if not os.path.isfile(jsonFile):
-            if not os.path.exists(saveToPath):
-                os.makedirs(saveToPath)
-        
-                print("\t>>> OCR-ing: %s" % citationKey)
-
-                textResults = {}
-                images = pdf2image.convert_from_path(pdfFileTemp, poppler_path= popplerPath)
-                pageTotal = len(images)
-                pageCount = 1
-                for image in images:
-                    image = image.convert('1')
-                    finalPath = os.path.join(saveToPath, "%04d.png" % pageCount)
-                    image.save(finalPath, optimize=True, quality=10)
-
-                    text = pytesseract.image_to_string(image, lang=language)
-                    textResults["%04d" % pageCount] = text
-
-                    print("\t\t%04d/%04d pages" % (pageCount, pageTotal))
-                    pageCount += 1
-
-                with open(jsonFile, 'w', encoding='utf8') as f9:
-                    json.dump(textResults, f9, sort_keys=True, indent=4, ensure_ascii=False)
-    
-            else:            
-                print("\t>>> %s has already been OCR-ed..." % citationKey)            
-
-        os.remove(pdfFileTemp)
-    else:
-        print("="*80)
-        print("Something wrong with the file")
-        print("="*80)
+###########################################################
+# FUNCTIONS ###############################################
+###########################################################
 
 # load bibTex Data into a dictionary
 def loadBib(bibTexFile):
@@ -129,5 +52,29 @@ def loadBib(bibTexFile):
     print("="*80)
     return(bibDic)
 
-# generate path from bibtex code, and create a folder, if does not exist;
-# if the code is `SavantMuslims2017`, the path will be pathToMemex+`/s/sa/SavantMuslims2017/`
+# generate path from bibtex citation key; for example, if the key is `SavantMuslims2017`,
+# the path will be pathToMemex+`/s/sa/SavantMuslims2017/`
+def generatePublPath(pathToMemex, bibTexCode):
+    temp = bibTexCode.lower()
+    directory = os.path.join(pathToMemex, temp[0], temp[:2], bibTexCode)
+    return(directory)
+
+# process a single bibliographical record: 1) create its unique path; 2) save a bib file; 3) save PDF file 
+def processBibRecord(pathToMemex, bibRecDict):
+    tempPath = generatePublPath(pathToMemex, bibRecDict["rCite"])
+
+    print("="*80)
+    print("%s :: %s" % (bibRecDict["rCite"], tempPath))
+    print("="*80)
+
+    if not os.path.exists(tempPath):
+        os.makedirs(tempPath)
+
+        bibFilePath = os.path.join(tempPath, "%s.bib" % bibRecDict["rCite"])
+        with open(bibFilePath, "w", encoding="utf8") as f9:
+            f9.write(bibRecDict["complete"])
+
+        pdfFileSRC = bibRecDict["file"]
+        pdfFileDST = os.path.join(tempPath, "%s.pdf" % bibRecDict["rCite"])
+        if not os.path.isfile(pdfFileDST): # this is to avoid copying that had been already copied.
+            shutil.copyfile(pdfFileSRC, pdfFileDST)
