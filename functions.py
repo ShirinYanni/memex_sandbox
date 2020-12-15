@@ -1,8 +1,47 @@
 import os, re, shutil
 
+import PyPDF2
+
 ###########################################################
 # FUNCTIONS ###############################################
 ###########################################################
+
+# load settings from our YML-like file
+# - the format of our YML is more relaxed than that of the
+#   original YML (YML does not support comments)
+def loadYmlSettings(ymlFile):
+    with open(ymlFile, "r", encoding="utf8") as f1:
+        data = f1.read()
+        data = re.sub(r"#.*", "", data) # remove comments
+        data = re.sub(r"\n+", "\n", data) # remove extra linebreaks used for readability
+        data = re.split(r"\n(?=\w)", data) # splitting
+        dic = {}
+        for d in data:
+            if ":" in d:
+                d = re.sub(r"\s+", " ", d.strip())
+                d = re.split(r"^([^:]+) *:", d)[1:]
+                key = d[0].strip()
+                value = d[1].strip()
+                dic[key] = value
+    #input(dic)
+    return(dic)
+
+# creates a dictionary of citationKey:Path pairs for a relevant type of files
+def dicOfRelevantFiles(pathToMemex, extension):
+    dic = {}
+    for subdir, dirs, files in os.walk(pathToMemex):
+        for file in files:
+            # process publication tf data
+            if file.endswith(extension):
+                key = file.replace(extension, "")
+                value = os.path.join(subdir, file)
+                dic[key] = value
+    return(dic)
+
+###########################################################
+# BIBLIOGRAPHY FUNCTIONS ##################################
+###########################################################
+
 
 # load bibTex Data into a dictionary
 def loadBib(bibTexFile):
@@ -78,3 +117,31 @@ def processBibRecord(pathToMemex, bibRecDict):
         pdfFileDST = os.path.join(tempPath, "%s.pdf" % bibRecDict["rCite"])
         if not os.path.isfile(pdfFileDST): # this is to avoid copying that had been already copied.
             shutil.copyfile(pdfFileSRC, pdfFileDST)
+
+
+###########################################################
+# INTERFACE-RELATED FUNCTIONS #############################
+###########################################################
+
+# HTML: generates TOCs for each page; the current page is highlighted with red
+def generatePageLinks(pNumList):
+    listMod = ["DETAILS"]
+    listMod.extend(pNumList)
+
+    toc = []
+    for l in listMod:
+        toc.append('<a href="%s.html">%s</a>' % (l, l))
+    toc = " ".join(toc)
+
+    pageDic = {}
+    for l in listMod:
+        pageDic[l] = toc.replace('>%s<' % l, ' style="color: red;">%s<' % l)
+
+    return(pageDic)
+
+# HTML: makes BIB more HTML friendly
+def prettifyBib(bibText):
+    bibText = bibText.replace("{{", "").replace("}}", "")
+    bibText = re.sub(r"\n\s+file = [^\n]+", "", bibText)
+    bibText = re.sub(r"\n\s+abstract = [^\n]+", "", bibText)
+    return(bibText)

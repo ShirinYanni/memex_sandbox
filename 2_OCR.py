@@ -13,10 +13,11 @@ import functions
 ###########################################################
 
 settingsFile = "settings.yml"
-settings = yaml.load(open(settingsFile))
+settings = yaml.safe_load(open(settingsFile))
 
 memexPath = settings["path_to_memex"]
-langKeys = yaml.load(open(settings["language_keys"]))
+langKeys = yaml.safe_load(open(settings["language_keys"]))
+
 
 ###########################################################
 # TRICKY FUNCTIONS ########################################
@@ -45,6 +46,7 @@ def ocrPublication(pathToMemex, citationKey, language):
     pdfFile  = os.path.join(publPath, citationKey + ".pdf")
     jsonFile = os.path.join(publPath, citationKey + ".json") # OCR results will be saved here
     saveToPath = os.path.join(publPath, "pages") # we will save processed images here
+
 
     # generate CLEAN pdf (necessary if you added highlights and comments to your PDFs)
     pdfFileTemp = removeCommentsFromPDF(pdfFile)
@@ -151,4 +153,4 @@ def processAllRecords(bibData):
 bibData = functions.loadBib(settings["bib_all"])
 processAllRecords(bibData)
 
-# record to regenerate: RossabiReview2011
+# record to regenerate: RossabiReview2011 ''' 
