@@ -1,0 +1,10 @@
+{
+    "czerepowickaSEJFGrammaticalLexicon2018": {},
+    "ekpenyongIntelligentSpeechFeatures2018": {},
+    "illinaNeuralNetworksRevisited2018": {},
+    "metaisNaturalLanguageProcessing2019": {},
+    "nouzaCrossLingualAdaptationBroadcast2018": {},
+    "quarteroniNaturalLanguageProcessing2018": {},
+    "stasAutomaticTranscriptionSubtitling2018": {},
+    "wiriyathammabhumComputerVisionNatural2016": {}
+}

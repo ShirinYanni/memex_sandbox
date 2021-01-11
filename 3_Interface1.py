@@ -19,45 +19,45 @@ def generatePublicationInterface(citeKey, pathToBibFile):
     print(citeKey)
 
     jsonFile = pathToBibFile.replace(".bib", ".json")
-    with open(jsonFile) as jsonData:
+    with open(jsonFile) as jsonData: 
         ocred = json.load(jsonData)
         pNums = ocred.keys()
 
         pageDic = functions.generatePageLinks(pNums)
 
         # load page template
-        with open(settings["template_page"], "r", encoding="utf8") as ft:
+        with open(settings["template_page"], "r", encoding="utf8") as ft: #add encoding to avoid error
             template = ft.read()
 
         # load individual bib record
         bibFile = pathToBibFile
-        bibDic = functions.loadBib(bibFile)
-        bibForHTML = functions.prettifyBib(bibDic[citeKey]["complete"])
+        bibDic = functions.loadBib(bibFile) #loads entire bib
+        bibForHTML = functions.prettifyBib(bibDic[citeKey]["complete"]) #structures the file
 
-        orderedPages = list(pageDic.keys())
+        orderedPages = list(pageDic.keys()) # generates list of all the keys and pgnumbers 
 
-        for o in range(0, len(orderedPages)):
+        for o in range(0, len(orderedPages)): #loop to create pages
             #print(o)
             k = orderedPages[o]
             v = pageDic[orderedPages[o]]
 
             pageTemp = template
-            pageTemp = pageTemp.replace("@PAGELINKS@", v)
-            pageTemp = pageTemp.replace("@PATHTOFILE@", "")
+            pageTemp = pageTemp.replace("@PAGELINKS@", v) #take a template
+            pageTemp = pageTemp.replace("@PATHTOFILE@", "") #replace the values
             pageTemp = pageTemp.replace("@CITATIONKEY@", citeKey)
 
-            if k != "DETAILS":
+            if k != "DETAILS": # for regular pages; one page is different from the others
                 mainElement = '<img src="@PAGEFILE@" width="100%" alt="">'.replace("@PAGEFILE@", "%s.png" % k)
                 pageTemp = pageTemp.replace("@MAINELEMENT@", mainElement)
                 pageTemp = pageTemp.replace("@OCREDCONTENT@", ocred[k].replace("\n", "<br>"))
-            else:
+            else: # if the page is html
                 mainElement = bibForHTML.replace("\n", "<br> ")
                 mainElement = '<div class="bib">%s</div>' % mainElement
                 mainElement += '\n<img src="wordcloud.jpg" width="100%" alt="wordcloud">'
                 pageTemp = pageTemp.replace("@MAINELEMENT@", mainElement)
                 pageTemp = pageTemp.replace("@OCREDCONTENT@", "")
 
-            # @NEXTPAGEHTML@ and @PREVIOUSPAGEHTML@
+            # @NEXTPAGEHTML@ and @PREVIOUSPAGEHTML@ #link to previous/ next pag; stop on last page
             if k == "DETAILS":
                 nextPage = "0001.html"
                 prevPage = ""
@@ -74,7 +74,7 @@ def generatePublicationInterface(citeKey, pathToBibFile):
             pageTemp = pageTemp.replace("@NEXTPAGEHTML@", nextPage)
             pageTemp = pageTemp.replace("@PREVIOUSPAGEHTML@", prevPage)
 
-            pagePath = os.path.join(pathToBibFile.replace(citeKey+".bib", ""), "pages", "%s.html" % k)
+            pagePath = os.path.join(pathToBibFile.replace(citeKey+".bib", ""), "pages", "%s.html" % k) #saves the origin page
             with open(pagePath, "w", encoding="utf8") as f9:
                 f9.write(pageTemp)
 

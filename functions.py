@@ -145,3 +145,18 @@ def prettifyBib(bibText):
     bibText = re.sub(r"\n\s+file = [^\n]+", "", bibText)
     bibText = re.sub(r"\n\s+abstract = [^\n]+", "", bibText)
     return(bibText)
+
+
+###########################################################
+############## STEP 4 FUNCTIONS ###########################
+###########################################################
+
+def filterDic(dic, thold):
+    retDic = {}    #empty Dictonary to copy filterd values into
+    for k,v in dic.items():     #loop through outer first dic, containig the titles
+        retDic[k]={}            #create a subDic for each title
+        for key,val in v.items():   #loop through the entries of each title
+            if val > thold:         #check threshold
+                if val < 0.97:        #check to not match the publication with itself
+                    retDic[k][key] = val    #add value
+    return(retDic)
