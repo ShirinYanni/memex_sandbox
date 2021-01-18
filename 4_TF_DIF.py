@@ -75,7 +75,7 @@ def generatetfidfvalues():
 
     filteredDic = {}                                                                  ## same for the other dictionary
  
-    filteredDic = functions.filterDic(cosineTableDic, 0.25)
+    filteredDic = functions.filterDic(cosineTableDic, 0.10)
 
     with open("cosineTableDic_filtered.txt", 'w', encoding='utf8') as f9:
         json.dump(filteredDic, f9, sort_keys=True, indent=4, ensure_ascii=False)

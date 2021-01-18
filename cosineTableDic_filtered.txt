@@ -1,10 +1,17 @@
 {
-    "czerepowickaSEJFGrammaticalLexicon2018": {},
+    "czerepowickaSEJFGrammaticalLexicon2018": {
+        "nouzaCrossLingualAdaptationBroadcast2018": 0.14725292966776687
+    },
     "ekpenyongIntelligentSpeechFeatures2018": {},
     "illinaNeuralNetworksRevisited2018": {},
     "metaisNaturalLanguageProcessing2019": {},
-    "nouzaCrossLingualAdaptationBroadcast2018": {},
+    "nouzaCrossLingualAdaptationBroadcast2018": {
+        "czerepowickaSEJFGrammaticalLexicon2018": 0.14725292966776687,
+        "stasAutomaticTranscriptionSubtitling2018": 0.20737463972970577
+    },
     "quarteroniNaturalLanguageProcessing2018": {},
-    "stasAutomaticTranscriptionSubtitling2018": {},
+    "stasAutomaticTranscriptionSubtitling2018": {
+        "nouzaCrossLingualAdaptationBroadcast2018": 0.20737463972970577
+    },
     "wiriyathammabhumComputerVisionNatural2016": {}
 }
