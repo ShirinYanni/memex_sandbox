@@ -1,0 +1,4 @@
+import re
+
+string = "Schrödinger"
+stringModified = string.replace("ö", "\w{,2}")
