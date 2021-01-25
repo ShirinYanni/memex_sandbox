@@ -1,5 +1,7 @@
 # PATH TO MEMEX
 path_to_memex: ./_data/
+stopwords: ./_misc/stopwords/
+path_to_results: ./_data/searches/
 
 # BIBLIOGRAPHICAL FILES
 bib_all: ./_bib/zotero_bibliography.bib
@@ -11,6 +13,8 @@ memex_path: /Users/shirin/Desktop/DH_Master/WS20_21/UE_Romanov_ToolsTechniquesDH
 template_page: ./_misc/template_page.html
 template_index: ./_misc/template_index.html
 content_index: ./_misc/content_index.html
+template_search: ./_misc/template_search.html
+
 
 # GENERATED FILES AND EXTENSIONS
 memexDF_file: ./_data/memex.documentFrequencies

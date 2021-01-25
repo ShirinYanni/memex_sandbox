@@ -118,6 +118,21 @@ def processBibRecord(pathToMemex, bibRecDict):
         if not os.path.isfile(pdfFileDST): # this is to avoid copying that had been already copied.
             shutil.copyfile(pdfFileSRC, pdfFileDST)
 
+# the function will quickly remove all files with a certain
+# extension --- useful when messing around and need to delete
+# lots of temporary files
+
+def removeFilesOfType(pathToMemex, fileExtension):
+    if fileExtension in [".pdf", ".bib"]:
+        sys.exit("files with extension %s must not be deleted in batch!!! Exiting..." % fileExtension)
+    else:
+        for subdir, dirs, files in os.walk(pathToMemex):
+            for file in files:
+                # process publication tf data
+                if file.endswith(fileExtension):
+                    pathToFile = os.path.join(subdir, file)
+                    print("Deleting: %s" % pathToFile)
+                    os.remove(pathToFile)
 
 ###########################################################
 # INTERFACE-RELATED FUNCTIONS #############################
@@ -148,6 +163,26 @@ def prettifyBib(bibText):
 
 
 ###########################################################
+# KEYWORD ANALYSIS FUNCTIONS ##############################
+###########################################################
+
+def loadMultiLingualStopWords(listOfLanguageCodes):
+    print("Loading stopwords...")
+    stopwords = []
+    pathToFiles = settings["stopwords"]
+    codes = json.load(open(os.path.join(pathToFiles, "languages.json")))
+
+    for l in listOfLanguageCodes:
+        with open(os.path.join(pathToFiles, codes[l]+".txt"), "r", encoding="utf8") as f1:
+            lang = f1.read().strip().split("\n")
+            stopwords.extend(lang)
+
+    stopwords = list(set(stopwords))
+    print("\tStopwords for: ", listOfLanguageCodes)
+    print("\tNumber of stopwords: %d" % len(stopwords))
+    #print(stopwords)
+    return(stopwords)
+###########################################################
 ############## STEP 4 FUNCTIONS ###########################
 ###########################################################
 
@@ -160,13 +195,3 @@ def filterDic(dic, thold):
                 if val < 0.97:        #check to not match the publication with itself
                     retDic[k][key] = val    #add value
     return(retDic)
-
-    def createWordCloud(savePath, tfIdfDic):
-    wc = WordCloud(width=1000, height=600, background_color="white", random_state=2,
-                   relative_scaling=0.5, colormap="gray") 
-    wc.generate_from_frequencies(tfIdfDic)
-    # plotting
-    plt.imshow(wc, interpolation="bilinear")
-    plt.axis("off")
-    #plt.show() # this line will show the plot
-    plt.savefig(savePath, dpi=200, bbox_inches='tight')
