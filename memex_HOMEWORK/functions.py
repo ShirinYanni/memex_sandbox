@@ -32,30 +32,24 @@ def loadYmlSettings(ymlFile):
     #input(dic)
     return(dic)
 
-# load bibTex Data into a dictionary
 def loadBib(bibTexFile):
 
     bibDic = {}
     recordsNeedFixing = []
 
     with open(bibTexFile, "r", encoding="utf8") as f1:
-        records = f1.read()
-        records = re.sub("\n@preamble[^\n]+", "", records)
-        records = records.split("\n@")
+        records = f1.read().split("\n@")
 
         for record in records[1:]:
-            completeRecord = "\n@" + record
-            completeRecord = re.sub("\n\s+file = [^\n]+", "", completeRecord)
+            # let process ONLY those records that have PDFs
+            if ".pdf" in record.lower():
+                completeRecord = "\n@" + record
 
-            record = record.strip().split("\n")[:-1]
+                record = record.strip().split("\n")[:-1]
 
-            rType = record[0].split("{")[0].strip()
-            rCiteRaw = record[0].split("{")[1].strip().replace(",", "")
+                rType = record[0].split("{")[0].strip()
+                rCite = record[0].split("{")[1].strip().replace(",", "")
 
-            rCite = rCiteRaw.replace("-", "")
-
-            # only valid characters in citeKey:
-            if re.search("^[A-Za-z0-9]+$", rCite):
                 bibDic[rCite] = {}
                 bibDic[rCite]["rCite"] = rCite
                 bibDic[rCite]["rType"] = rType
@@ -79,32 +73,12 @@ def loadBib(bibTexFile):
                                     val = t
 
                             bibDic[rCite][key] = val
-            else:
-                print(rCiteRaw)
-                print(rCite)
-                print(completeRecord)
-                sys.exit("\n\tPROCESSING STOPPED: INVALID KEY")
 
-        # filter bibDic: remove records that do not have informatin on authr/editor and date
-        bibDicFiltered = {}
+    print("="*80)
+    print("NUMBER OF RECORDS IN BIBLIGORAPHY: %d" % len(bibDic))
+    print("="*80)
+    return(bibDic)
 
-        for k,v in bibDic.items():
-            if "author" in v or "editor" in v:
-                if "date" in v:
-                    bibDicFiltered[k] = v
-                else:
-                    print(v["complete"])
-                    input(k)
-            else:
-                print(v["complete"])
-                input(k)
-
-    if len(bibDicFiltered) > 1:
-        print("="*80)
-        print("NUMBER OF RECORDS IN BIBLIOGRAPHY         : %d" % len(bibDic))
-        print("NUMBER OF RECORDS IN FILTERED BIBLIOGRAPHY: %d" % len(bibDicFiltered))
-        print("="*80)
-    return(bibDicFiltered)
 
 # generate path from bibtex citation key; for example, if the key is `SavantMuslims2017`,
 # the path will be pathToMemex+`/s/sa/SavantMuslims2017/`
@@ -316,3 +290,4 @@ def loadMultiLingualStopWords(listOfLanguageCodes):
 
 settings = loadYmlSettings("settings.yml")
 langKeys = loadYmlSettings(settings["language_keys"])
+

@@ -3,26 +3,24 @@ path_to_memex: ./_data/
 stopwords: ./_misc/stopwords/
 path_to_results: ./_data/searches/
 
-# BIBLIOGRAPHICAL FILES & OCR-ING
-zotero_bib: ./_bib/zotero_bibliography.bib # exported in portions from Zotero
-memex_all:  ./_bib/memex_bibliogaphy.bib # aggregated dfrom all single .bib files
+# BIBLIOGRAPHICAL FILES
+bib_all: ./_bib/zotero_bibliography.bib
 bibtex_keys: ./_bib/bibtex_keys.yml
-language_keys: ./_bib/bibtex_languages.yml
-ocr_results: .json
-page_limit: 500 # this will help to process items below a certail threshold first
-ocr_priorities: PetryGeographic1978, PetryGeographic1978a,
-    PetryGeographic1980, PetryGeographic1980a
-
-# FILE NAMES WITH ANALYTICAL RESULTS
-tfidf_publ: results_tfidf_publications.dataJson
-publ_cosDist: results_cosineDist_publications.dataJson
-page_cosDist: results_cosineDist_pages.dataJson
+language_keys: ./_bib/language_keys.yml
+memex_path: /Users/shirin/Desktop/DH_Master/WS20_21/UE_Romanov_ToolsTechniquesDH/memex_sandbox/_data
 
 # TEMPLATES AND CONTENT FILES FOR THE INTERFACE
 template_page: ./_misc/template_page.html
 template_index: ./_misc/template_index.html
 content_index: ./_misc/content_index.html
 template_search: ./_misc/template_search.html
+
+
+# FILE NAMES WITH ANALYTICAL RESULTS
+tfidf_publ: results_tfidf_publications.dataJson
+publ_cosDist: results_cosineDist.dataJson
+page_cosDist: results_cosineDist_pages.dataJson
+
 
 # GENERATED FILES AND EXTENSIONS
 memexDF_file: ./_data/memex.documentFrequencies
